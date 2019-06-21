@@ -1,0 +1,12 @@
+.margin{
+  margin: 100px;
+}
+
+.tabla{
+  width: 100%;
+  text-align: left;
+}
+
+.tabla td{
+  padding: 10px 10px;
+}
