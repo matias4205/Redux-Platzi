@@ -1,4 +1,4 @@
-.margin{
+.margen{
   margin: 100px;
 }
 
@@ -9,4 +9,19 @@
 
 .tabla td{
   padding: 10px 10px;
+}
+
+#menu{
+  background-color: #253A46;
+  padding: 20px;
+  font-size: 20px;
+}
+
+#menu a{
+  color: white;
+  padding-right: 25px;
+}
+
+body{
+  margin: 0;
 }
