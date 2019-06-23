@@ -1,0 +1,3 @@
+export const TRAER_TODOS = 'USUARIOS_FETCH_USERS';
+export const LOADING = 'USUARIOS_LOADING';
+export const ERROR = 'USUARIOS_ERROR';

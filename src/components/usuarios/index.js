@@ -3,47 +3,35 @@ import { connect } from 'react-redux';
 
 import * as usuariosActions from '../../actions/usuariosActions';
 
-import '../styles/index.css'
-
+import Spinner from '../general/Spinner';
+import Fatal from '../general/Fatal';
+import Tabla from './Tabla';
 
 class Usuarios extends Component{
   componentDidMount(){
-    // this.fetchUsers();
-    this.props.fetchUsers();
+    if (!this.props.usuarios.length){
+      this.props.fetchUsers();
+    }
   }
 
-  ponerUsuarios = () => (
-    this.props.usuarios.map(item => (
-      <tr key={item.id}>
-        <td>{item.name}</td>
-        <td>{item.email}</td>
-        <td>{item.website}</td>
-      </tr>
-    ))
-  )
-
   render(){
+    if(this.props.loading) {
+      return (
+        <Spinner />
+      );
+    }
+
+    if(this.props.error){
+      return(
+        <Fatal message={this.props.error}/>
+      );
+    }
+
     return (
-      <div>
-        <table className="tabla">
-          <thead>
-            <tr>
-              <th>
-                Nombre
-              </th>
-              <th>
-                Correo
-              </th>
-              <th>
-                Enlace
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            { this.ponerUsuarios() }
-          </tbody>
-        </table>
-      </div>
+      <React.Fragment>
+        <h1>Usuarios</h1>
+        <Tabla />
+      </React.Fragment>
     );
   }
 }
