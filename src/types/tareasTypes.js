@@ -1,0 +1,8 @@
+export const TRAER_TODAS = 'TAREAS_FETCH_TAREAS';
+export const LOADING = 'TAREAS_LOADING';
+export const ERROR = 'TAREAS_ERROR';
+export const CHANGE_TITLE = 'TAREAS_CHANGE_TITLE';
+export const CHANGE_USERID = 'TAREAS_CHANGE_USERID';
+export const GUARDAR = 'TAREAS_GUARDAR';
+export const ACTUALIZAR = 'TAREAS_ACTUALIZAR';
+export const CLEAN = 'TAREAS_CLEAN_FORM'
