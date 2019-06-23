@@ -6,9 +6,10 @@ import * as publicacionesActions from '../../actions/publicacionesActions';
 
 import Spinner from '../general/Spinner';
 import Fatal from '../general/Fatal';
+import Comentarios from './Comentarios';
 
 const { fetchUsers: usuariosTraerTodos } = usuariosActions;
-const { fetchUserPost: publicacionesTraerPorUsuario, abrirCerrarPub } = publicacionesActions;
+const { fetchUserPost: publicacionesTraerPorUsuario, abrirCerrarPub, traerComentarios } = publicacionesActions;
 
 class Publicaciones extends Component {
     ponerUsuarios = () => {
@@ -64,19 +65,27 @@ class Publicaciones extends Component {
         
         const { publicaciones_key } = usuarios[id];
 
-        return this.mostrarInfo(publicaciones[publicaciones_key] ,publicaciones_key);
+        return this.mostrarInfo(publicaciones[publicaciones_key], publicaciones_key);
     }
 
     mostrarInfo = (publicaciones, publicaciones_key, ) => (
         <React.Fragment>
             {publicaciones.map((item, com_index)=>(
-                <div key={item.id} className="pub_titulo" onClick={ () => this.props.abrirCerrarPub(publicaciones_key, com_index) }>
+                <div key={item.id} className="pub_titulo" onClick={ () => this.mostrarComentarios(publicaciones_key, com_index, item.comentarios) }>
                     <h2>{item.title}</h2>
                     <h3>{item.body}</h3>
+                    {(item.abierto && <Comentarios comentarios={item.comentarios} />)}
                 </div>
             ))}
         </React.Fragment>
     );
+
+    mostrarComentarios = (publicaciones_key, com_index, comentarios) => {
+        this.props.abrirCerrarPub(publicaciones_key, com_index);
+        if(!comentarios.length){
+            this.props.traerComentarios(publicaciones_key, com_index);
+        }
+    }
 
     async componentDidMount(){
         const { // NO PUEDO DESTRUCTURAR EL USUARIOSREDUCER YA QUE SI LO HAGO SE CREA UNA NUEVA REFERENCIA A ESTE Y NO SE ACTUALIZARIA
@@ -117,7 +126,8 @@ const mapStateToProps = ({ usuariosReducer, publicacionesReducer }) => {
 const mapDispatchToProps = {
     usuariosTraerTodos,
     publicacionesTraerPorUsuario,
-    abrirCerrarPub
+    abrirCerrarPub,
+    traerComentarios
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Publicaciones);

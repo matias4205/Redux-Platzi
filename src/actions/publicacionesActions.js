@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { TRAER_TODOS, LOADING, ERROR, TRAER_POR_USUARIO } from '../types/publicacionesTypes';
+import { TRAER_TODOS, LOADING, ERROR, TRAER_POR_USUARIO, ACTUALIZAR, COMENTARIO_LOADING, COMENTARIOS_ERROR, COMENTARIOS_ACTUALIZAR } from '../types/publicacionesTypes';
 import * as usuariosTypes from '../types/usuariosTypes';
 
 const { TRAER_TODOS: USUARIOS_TRAER_TODOS } = usuariosTypes;
@@ -65,8 +65,7 @@ export const fetchUserPost = (id) => async (dispatch, getState) => {
             type: USUARIOS_TRAER_TODOS,
             payload: usuarios_actualizados
         });
-        
-    } catch (err) {
+    }catch (err) {
         dispatch({
             type: ERROR,
             payload: `Infromacion de publicaciones no disponible: \n${err.message}`
@@ -74,6 +73,55 @@ export const fetchUserPost = (id) => async (dispatch, getState) => {
     }
 }
 
-export const abrirCerrarPub = (pub_key, com_key) => (dispatch) => {
-    console.log(pub_key, com_key);
+export const abrirCerrarPub = (pub_key, com_key) => (dispatch, getState) => {
+    const { publicaciones } = getState().publicacionesReducer;
+    const publicacionSelecionada = publicaciones[pub_key][com_key];
+    
+    const publicacion_actualizada = {
+        ...publicacionSelecionada,
+        abierto: !publicacionSelecionada.abierto
+    }
+
+    const publicaciones_actualizadas = [ ...publicaciones ];
+    publicaciones_actualizadas[pub_key][com_key] = publicacion_actualizada;
+
+    dispatch({
+        type: ACTUALIZAR,
+        payload: publicaciones_actualizadas
+    });
+}
+
+export const traerComentarios = (pub_key, com_key) => async (dispatch, getState) => {
+    const { publicaciones } = getState().publicacionesReducer;
+    const publicacionSelecionada = publicaciones[pub_key][com_key];
+    
+    dispatch({
+        type: COMENTARIO_LOADING,
+    });
+    
+    try {
+        const { data } = await axios.get(`https://jsonplaceholder.typicode.com/comments?postId=${publicacionSelecionada.id}`);
+
+        const publicacion_actualizada = {
+            ...publicacionSelecionada,
+            comentarios: data
+        }
+
+        const publicaciones_actualizadas = [ ...publicaciones ];
+        publicaciones_actualizadas[pub_key] = [
+			...publicaciones[pub_key]
+		]; //Investigar porque asi
+        publicaciones_actualizadas[pub_key][com_key] = publicacion_actualizada; //Si hacia directamente este se actualizaba antes del dispatch
+
+        dispatch({
+            type: COMENTARIOS_ACTUALIZAR,
+            payload: publicaciones_actualizadas
+        });
+    } catch (err) {
+        dispatch({
+            type: COMENTARIOS_ERROR,
+            payload: `Comentarios error: ${err}`
+        })
+    }
+        
 }
