@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './components/styles/index.css';
 import App from './components/App';
+import { composeWithDevTools } from 'redux-devtools-extension/logOnlyInProduction'
 
 import './components/styles/iconos.css';
 
@@ -11,10 +12,14 @@ import reduxThunk from 'redux-thunk';
 
 import reducers from './reducers/index';
 
+const composeEnhancers = composeWithDevTools({})
+
 const store = createStore(
     reducers, //Todos los reducers
     {}, //El estado inicial
-    applyMiddleware(reduxThunk)
+    composeEnhancers(
+        applyMiddleware(reduxThunk)
+    )
 );
 
 ReactDOM.render(
